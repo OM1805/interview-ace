@@ -19,8 +19,13 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
   );
   const engagement =
     cameraStats.samples > 0
-      ? `${Math.round((cameraStats.facingSamples / cameraStats.samples) * 100)}% of sampled moments facing the camera`
+      ? `${Math.round((cameraStats.facingSamples / cameraStats.samples) * 100)}%`
       : "Not measured";
+  const gazeAttention =
+    cameraStats.gazeSamples > 0
+      ? `${Math.round((cameraStats.attentiveSamples / cameraStats.gazeSamples) * 100)}%`
+      : "Not measured";
+
 
   return (
     <main className="mx-auto w-full max-w-4xl space-y-5 px-4 py-10">

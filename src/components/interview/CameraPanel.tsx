@@ -1,6 +1,6 @@
 import { useEffect, type RefObject } from "react";
 import type { CameraStatus } from "@/lib/media/useCamera";
-import type { EngagementStatus, FaceStatus } from "@/lib/media/useFaceMonitor";
+import type { EngagementStatus, FaceStatus, GazeStatus } from "@/lib/media/useFaceMonitor";
 import { Alert, StatusPill, type Tone } from "./ui";
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
   cameraError: string | null;
   faceStatus: FaceStatus;
   engagement: EngagementStatus;
+  gaze: GazeStatus;
 }
 
 const faceLabel: Record<FaceStatus, { text: string; tone: Tone }> = {
@@ -23,7 +24,17 @@ const faceLabel: Record<FaceStatus, { text: string; tone: Tone }> = {
 const engagementLabel: Record<EngagementStatus, { text: string; tone: Tone }> = {
   unknown: { text: "Camera Engagement: Unknown", tone: "neutral" },
   facing: { text: "Camera Engagement: Facing camera", tone: "success" },
-  away: { text: "Camera Engagement: Looking away", tone: "warning" },
+  away: { text: "Camera Engagement: Head turned away", tone: "warning" },
+};
+
+const gazeLabel: Record<GazeStatus, { text: string; tone: Tone }> = {
+  unavailable: { text: "Gaze monitoring unavailable", tone: "warning" },
+  unknown: { text: "Gaze Attention: Measuring…", tone: "neutral" },
+  good: { text: "Gaze Attention: Good", tone: "success" },
+  left: { text: "Gaze Attention: Looking left", tone: "warning" },
+  right: { text: "Gaze Attention: Looking right", tone: "warning" },
+  down: { text: "Gaze Attention: Looking down", tone: "warning" },
+  away: { text: "Gaze Attention: Looking away", tone: "warning" },
 };
 
 export function CameraPanel({
@@ -33,7 +44,9 @@ export function CameraPanel({
   cameraError,
   faceStatus,
   engagement,
+  gaze,
 }: Props) {
+
   useEffect(() => {
     const video = videoRef.current;
     if (video && stream && video.srcObject !== stream) {
