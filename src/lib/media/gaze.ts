@@ -38,10 +38,19 @@ export interface GazeSample {
  * points plus 10 refined iris points. Indices below are the standard MediaPipe
  * face-mesh indices.
  */
-const EYES = {
+interface EyeIndices {
+  outer: number;
+  inner: number;
+  upper: number;
+  lower: number;
+  iris: number;
+}
+
+const EYES: { left: EyeIndices; right: EyeIndices } = {
   left: { outer: 33, inner: 133, upper: 159, lower: 145, iris: 468 },
   right: { outer: 263, inner: 362, upper: 386, lower: 374, iris: 473 },
-} as const;
+};
+
 
 interface EyeMetrics {
   /** 0 = outer corner side, 1 = inner corner side, ~0.5 = centred. */
