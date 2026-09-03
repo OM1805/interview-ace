@@ -61,7 +61,7 @@ interface EyeMetrics {
   ear: number;
 }
 
-function eyeMetrics(points: Landmark[], eye: (typeof EYES)["left"]): EyeMetrics | null {
+function eyeMetrics(points: Landmark[], eye: EyeIndices): EyeMetrics | null {
   const outer = points[eye.outer];
   const inner = points[eye.inner];
   const upper = points[eye.upper];
