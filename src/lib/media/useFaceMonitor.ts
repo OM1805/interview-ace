@@ -219,7 +219,12 @@ export function useFaceMonitor(
                   awayEventActive.current = true;
                   statsRef.current.attentionWarnings += 1;
                   const level = Math.min(statsRef.current.attentionWarnings, ATTENTION_WARNINGS.length);
-                  emit("attention", ATTENTION_WARNINGS[level - 1]!, "attention");
+                  emit(
+                    "attention",
+                    `Attention Warning ${level}: ${ATTENTION_WARNINGS[level - 1]!}`,
+                    "attention",
+                  );
+
                 }
               }
             }
