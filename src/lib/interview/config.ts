@@ -89,7 +89,6 @@ export const ATTENTION_WARNINGS = [
   "Please return your attention toward the camera.",
 ] as const;
 
-
 /** Max upload size for a temporary audio clip (bytes). */
 export const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
 

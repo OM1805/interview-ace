@@ -146,7 +146,11 @@ function measureHead(points: Landmark[]): { pose: HeadPose; faceWidth: number } 
   const pitch = clamp(((nose.y - eyeMidY) / Math.max(faceHeight, 1e-6) - 0.28) * 4, -2, 2);
 
   // Roll: tilt of the inter-eye line.
-  const roll = clamp(Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x) / (Math.PI / 4), -2, 2);
+  const roll = clamp(
+    Math.atan2(rightEye.y - leftEye.y, rightEye.x - leftEye.x) / (Math.PI / 4),
+    -2,
+    2,
+  );
 
   return { pose: { yaw, pitch, roll }, faceWidth };
 }
@@ -225,7 +229,12 @@ export function ema(previous: number | null, next: number, alpha: number): numbe
 }
 
 /** Descriptive label from the continuous, calibration-corrected coordinates. */
-export function describeGaze(gazeX: number, gazeY: number, toleranceX: number, toleranceY: number): GazeDirection {
+export function describeGaze(
+  gazeX: number,
+  gazeY: number,
+  toleranceX: number,
+  toleranceY: number,
+): GazeDirection {
   const horizontal = Math.abs(gazeX) > toleranceX;
   const vertical = Math.abs(gazeY) > toleranceY;
 
