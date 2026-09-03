@@ -24,7 +24,7 @@ src/
     ui.tsx                           # shared UI primitives (button, card, pills, score bars)
     SetupScreen.tsx                  # role/difficulty selection + requirements
     InterviewScreen.tsx              # question, timer, controls, transcript, warnings
-    CameraPanel.tsx                  # live webcam preview + camera/face/engagement status
+    CameraPanel.tsx                  # live webcam preview + camera/face/engagement/gaze status
     AnalysisScreen.tsx               # per-answer scores and feedback
     ReportScreen.tsx                 # final report and interview metrics
   lib/interview/
@@ -35,7 +35,9 @@ src/
   lib/media/
     useCamera.ts                     # webcam stream lifecycle
     useRecorder.ts                   # temporary microphone capture
-    useFaceMonitor.ts                # face presence, face count, camera engagement, warnings
+    gaze.ts                          # local iris/eyelid gaze estimation + smoothing
+    useFaceMonitor.ts                # face presence, face count, engagement, gaze, warnings
+
 ```
 
 ## How it works
@@ -54,6 +56,29 @@ While the interview runs, the webcam feed is analysed locally for face presence,
 multiple faces, and approximate head orientation ("Camera Engagement"). Warnings appear
 after a 3-second grace period with an 8-second cooldown and are purely informational —
 they never fail, stop, or auto-submit anything.
+
+### Gaze attention monitoring
+
+Gaze attention is estimated entirely in the browser from the MediaPipe face landmarks
+already used for face detection (`src/lib/media/gaze.ts`):
+
+- Iris landmarks (468 / 473) are compared to the eye corners (33/133, 362/263) to get a
+  normalized horizontal iris position, and to the eyelids (159/145, 386/374) for a
+  normalized vertical position.
+- Eye aspect ratio filters out blinks; blink frames are skipped instead of counted as
+  looking away. Head orientation gates reliability: a strongly turned head reports "away".
+- Five consecutive samples are smoothed with a 3-of-5 majority vote before any status
+  change, so brief glances do not trigger warnings.
+- A continuous off-camera gaze must persist for 3 seconds before it counts as an
+  attention-away event; 1 second of good gaze recovers the state.
+- Exactly two informational attention warnings exist, with the standard 8-second cooldown
+  and one warning per distinct away event. They never block, fail, or end the interview.
+- The final report shows gaze attention percentage alongside camera engagement, plus
+  separate attention-warning and face-warning counts.
+
+No video frames, eye images, or camera data ever leave the browser — only text
+transcripts are sent for AI evaluation.
+
 
 ## Scoring
 
@@ -90,6 +115,9 @@ over HTTPS or localhost for those APIs to work.
 
 - Camera engagement is an approximation from face landmark geometry, not eye tracking.
   Glasses, lighting, and off-centre camera placement affect it.
+- Gaze attention is an approximation from iris/eyelid landmark ratios. It is not
+  calibrated per user and is not a proctoring or cheating-detection signal.
+
 - Face detection needs to download the MediaPipe model from a CDN on first use; if it
   fails, the app shows "Face detection unavailable" and the interview continues.
 - Transcription accuracy depends on microphone quality and background noise.

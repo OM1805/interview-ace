@@ -1,8 +1,4 @@
-import {
-  SCORE_CATEGORIES,
-  type AnswerRecord,
-  type FinalReport,
-} from "@/lib/interview/config";
+import { SCORE_CATEGORIES, type AnswerRecord, type FinalReport } from "@/lib/interview/config";
 import type { CameraStats } from "@/lib/media/useFaceMonitor";
 import { BulletList, Button, Card, ScoreBar } from "./ui";
 
@@ -19,7 +15,11 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
   );
   const engagement =
     cameraStats.samples > 0
-      ? `${Math.round((cameraStats.facingSamples / cameraStats.samples) * 100)}% of sampled moments facing the camera`
+      ? `${Math.round((cameraStats.facingSamples / cameraStats.samples) * 100)}%`
+      : "Not measured";
+  const gazeAttention =
+    cameraStats.gazeSamples > 0
+      ? `${Math.round((cameraStats.attentiveSamples / cameraStats.gazeSamples) * 100)}%`
       : "Not measured";
 
   return (
@@ -87,15 +87,29 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
           </div>
           <div>
             <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-              Camera engagement summary
+              Camera engagement
             </dt>
-            <dd className="mt-1 text-sm text-foreground">{engagement}</dd>
+            <dd className="mt-1 text-lg font-semibold text-foreground">{engagement}</dd>
           </div>
           <div>
             <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-              Camera warnings shown
+              Gaze attention
             </dt>
-            <dd className="mt-1 text-lg font-semibold text-foreground">{cameraStats.warnings}</dd>
+            <dd className="mt-1 text-lg font-semibold text-foreground">{gazeAttention}</dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Attention warnings
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.attentionWarnings}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">Face warnings</dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.faceWarnings}
+            </dd>
           </div>
         </dl>
         <p className="text-xs text-muted-foreground">
