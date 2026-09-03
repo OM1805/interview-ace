@@ -79,7 +79,6 @@ function InterviewApp() {
     pushWarning,
   );
 
-
   /** Setup → questions. */
   const handleStart = useCallback(async () => {
     setSetupError(null);
@@ -314,7 +313,6 @@ function InterviewApp() {
           engagement={engagement}
           gaze={gaze}
         />
-
       </div>
     </main>
   );

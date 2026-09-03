@@ -51,7 +51,6 @@ const EYES: { left: EyeIndices; right: EyeIndices } = {
   right: { outer: 263, inner: 362, upper: 386, lower: 374, iris: 473 },
 };
 
-
 interface EyeMetrics {
   /** 0 = outer corner side, 1 = inner corner side, ~0.5 = centred. */
   horizontal: number;
@@ -106,7 +105,8 @@ export function estimateGaze(points: Landmark[], headFacing: boolean): GazeSampl
   if (vertical > GAZE_VERTICAL_DOWN) return { direction: "down", blinking: false, valid: true };
   if (vertical < GAZE_VERTICAL_UP) return { direction: "away", blinking: false, valid: true };
   if (horizontal < GAZE_HORIZONTAL_LEFT) return { direction: "left", blinking: false, valid: true };
-  if (horizontal > GAZE_HORIZONTAL_RIGHT) return { direction: "right", blinking: false, valid: true };
+  if (horizontal > GAZE_HORIZONTAL_RIGHT)
+    return { direction: "right", blinking: false, valid: true };
   return { direction: "good", blinking: false, valid: true };
 }
 
@@ -115,10 +115,7 @@ export function estimateGaze(points: Landmark[], headFacing: boolean): GazeSampl
  * majority of the recent samples agree. This absorbs blinks, quick glances
  * and single-frame landmark noise.
  */
-export function smoothDirection(
-  buffer: GazeDirection[],
-  fallback: GazeDirection,
-): GazeDirection {
+export function smoothDirection(buffer: GazeDirection[], fallback: GazeDirection): GazeDirection {
   if (buffer.length === 0) return fallback;
   const counts = new Map<GazeDirection, number>();
   for (const d of buffer) counts.set(d, (counts.get(d) ?? 0) + 1);

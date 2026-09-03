@@ -46,7 +46,6 @@ export function CameraPanel({
   engagement,
   gaze,
 }: Props) {
-
   useEffect(() => {
     const video = videoRef.current;
     if (video && stream && video.srcObject !== stream) {
@@ -75,7 +74,8 @@ export function CameraPanel({
 
       <div className="flex flex-wrap gap-2">
         <StatusPill tone={cameraStatus === "active" ? "success" : "warning"}>
-          Camera: {cameraStatus === "active" ? "Active" : cameraStatus === "error" ? "Error" : "Off"}
+          Camera:{" "}
+          {cameraStatus === "active" ? "Active" : cameraStatus === "error" ? "Error" : "Off"}
         </StatusPill>
         <StatusPill tone={faceLabel[faceStatus].tone}>{faceLabel[faceStatus].text}</StatusPill>
         <StatusPill tone={engagementLabel[engagement].tone}>

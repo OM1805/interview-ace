@@ -218,13 +218,15 @@ export function useFaceMonitor(
                 if (!awayEventActive.current && now - awaySince.current > GAZE_GRACE_MS) {
                   awayEventActive.current = true;
                   statsRef.current.attentionWarnings += 1;
-                  const level = Math.min(statsRef.current.attentionWarnings, ATTENTION_WARNINGS.length);
+                  const level = Math.min(
+                    statsRef.current.attentionWarnings,
+                    ATTENTION_WARNINGS.length,
+                  );
                   emit(
                     "attention",
                     `Attention Warning ${level}: ${ATTENTION_WARNINGS[level - 1]!}`,
                     "attention",
                   );
-
                 }
               }
             }

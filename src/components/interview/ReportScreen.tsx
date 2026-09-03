@@ -1,8 +1,4 @@
-import {
-  SCORE_CATEGORIES,
-  type AnswerRecord,
-  type FinalReport,
-} from "@/lib/interview/config";
+import { SCORE_CATEGORIES, type AnswerRecord, type FinalReport } from "@/lib/interview/config";
 import type { CameraStats } from "@/lib/media/useFaceMonitor";
 import { BulletList, Button, Card, ScoreBar } from "./ui";
 
@@ -25,7 +21,6 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
     cameraStats.gazeSamples > 0
       ? `${Math.round((cameraStats.attentiveSamples / cameraStats.gazeSamples) * 100)}%`
       : "Not measured";
-
 
   return (
     <main className="mx-auto w-full max-w-4xl space-y-5 px-4 py-10">
@@ -111,14 +106,11 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
             </dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-              Face warnings
-            </dt>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">Face warnings</dt>
             <dd className="mt-1 text-lg font-semibold text-foreground">
               {cameraStats.faceWarnings}
             </dd>
           </div>
-
         </dl>
         <p className="text-xs text-muted-foreground">
           Camera metrics describe framing and presence only. They are not used to infer confidence,
