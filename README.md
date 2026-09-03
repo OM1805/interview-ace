@@ -113,6 +113,9 @@ over HTTPS or localhost for those APIs to work.
 
 - Camera engagement is an approximation from face landmark geometry, not eye tracking.
   Glasses, lighting, and off-centre camera placement affect it.
+- Gaze attention is an approximation from iris/eyelid landmark ratios. It is not
+  calibrated per user and is not a proctoring or cheating-detection signal.
+
 - Face detection needs to download the MediaPipe model from a CDN on first use; if it
   fails, the app shows "Face detection unavailable" and the interview continues.
 - Transcription accuracy depends on microphone quality and background noise.
