@@ -24,7 +24,7 @@ src/
     ui.tsx                           # shared UI primitives (button, card, pills, score bars)
     SetupScreen.tsx                  # role/difficulty selection + requirements
     InterviewScreen.tsx              # question, timer, controls, transcript, warnings
-    CameraPanel.tsx                  # live webcam preview + camera/face/engagement status
+    CameraPanel.tsx                  # live webcam preview + camera/face/engagement/gaze status
     AnalysisScreen.tsx               # per-answer scores and feedback
     ReportScreen.tsx                 # final report and interview metrics
   lib/interview/
@@ -35,7 +35,9 @@ src/
   lib/media/
     useCamera.ts                     # webcam stream lifecycle
     useRecorder.ts                   # temporary microphone capture
-    useFaceMonitor.ts                # face presence, face count, camera engagement, warnings
+    gaze.ts                          # local iris/eyelid gaze estimation + smoothing
+    useFaceMonitor.ts                # face presence, face count, engagement, gaze, warnings
+
 ```
 
 ## How it works
