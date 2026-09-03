@@ -319,7 +319,10 @@ function InterviewApp() {
           cameraError={camera.error}
           faceStatus={faceStatus}
           engagement={engagement}
-          gaze={gaze}
+          attentionState={attentionState}
+          gazeDirection={gazeDirection}
+          warningLevel={warningLevel}
+          calibrated={calibrated}
         />
       </div>
     </main>
