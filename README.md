@@ -35,8 +35,8 @@ src/
   lib/media/
     useCamera.ts                     # webcam stream lifecycle
     useRecorder.ts                   # temporary microphone capture
-    gaze.ts                          # local iris/eyelid gaze estimation + smoothing
-    useFaceMonitor.ts                # face presence, face count, engagement, gaze, warnings
+    gaze.ts                          # continuous local gaze/head measurement + smoothing
+    useFaceMonitor.ts                # calibration, attention state, behaviour metrics, warning levels
 
 ```
 
@@ -127,8 +127,9 @@ over HTTPS or localhost for those APIs to work.
 
 - Camera engagement is an approximation from face landmark geometry, not eye tracking.
   Glasses, lighting, and off-centre camera placement affect it.
-- Gaze attention is an approximation from iris/eyelid landmark ratios. It is not
-  calibrated per user and is not a proctoring or cheating-detection signal.
+- Gaze attention is an approximation from iris/eyelid landmark ratios with a short
+  per-session calibration. It is not exact eye tracking and is not a proctoring,
+  cheating, honesty, emotion or personality signal.
 
 - Face detection needs to download the MediaPipe model from a CDN on first use; if it
   fails, the app shows "Face detection unavailable" and the interview continues.
