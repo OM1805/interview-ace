@@ -92,16 +92,33 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
           </div>
           <div>
             <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-              Camera engagement summary
+              Camera engagement
             </dt>
-            <dd className="mt-1 text-sm text-foreground">{engagement}</dd>
+            <dd className="mt-1 text-lg font-semibold text-foreground">{engagement}</dd>
           </div>
           <div>
             <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-              Camera warnings shown
+              Gaze attention
             </dt>
-            <dd className="mt-1 text-lg font-semibold text-foreground">{cameraStats.warnings}</dd>
+            <dd className="mt-1 text-lg font-semibold text-foreground">{gazeAttention}</dd>
           </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Attention warnings
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.attentionWarnings}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Face warnings
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.faceWarnings}
+            </dd>
+          </div>
+
         </dl>
         <p className="text-xs text-muted-foreground">
           Camera metrics describe framing and presence only. They are not used to infer confidence,
