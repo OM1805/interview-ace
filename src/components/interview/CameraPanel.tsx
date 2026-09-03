@@ -81,6 +81,8 @@ export function CameraPanel({
         <StatusPill tone={engagementLabel[engagement].tone}>
           {engagementLabel[engagement].text}
         </StatusPill>
+        <StatusPill tone={gazeLabel[gaze].tone}>{gazeLabel[gaze].text}</StatusPill>
+
       </div>
 
       {cameraError && <Alert tone="error">{cameraError}</Alert>}
