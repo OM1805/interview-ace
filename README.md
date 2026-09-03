@@ -35,8 +35,8 @@ src/
   lib/media/
     useCamera.ts                     # webcam stream lifecycle
     useRecorder.ts                   # temporary microphone capture
-    gaze.ts                          # local iris/eyelid gaze estimation + smoothing
-    useFaceMonitor.ts                # face presence, face count, engagement, gaze, warnings
+    gaze.ts                          # continuous local gaze/head measurement + smoothing
+    useFaceMonitor.ts                # calibration, attention state, behaviour metrics, warning levels
 
 ```
 
@@ -60,21 +60,33 @@ they never fail, stop, or auto-submit anything.
 ### Gaze attention monitoring
 
 Gaze attention is estimated entirely in the browser from the MediaPipe face landmarks
-already used for face detection (`src/lib/media/gaze.ts`):
+already used for face detection (`src/lib/media/gaze.ts`, `src/lib/media/useFaceMonitor.ts`).
+All thresholds live in one place: `src/lib/interview/config.ts`.
 
-- Iris landmarks (468 / 473) are compared to the eye corners (33/133, 362/263) to get a
-  normalized horizontal iris position, and to the eyelids (159/145, 386/374) for a
-  normalized vertical position.
-- Eye aspect ratio filters out blinks; blink frames are skipped instead of counted as
-  looking away. Head orientation gates reliability: a strongly turned head reports "away".
-- Five consecutive samples are smoothed with a 3-of-5 majority vote before any status
-  change, so brief glances do not trigger warnings.
-- A continuous off-camera gaze must persist for 3 seconds before it counts as an
-  attention-away event; 1 second of good gaze recovers the state.
-- Exactly two informational attention warnings exist, with the standard 8-second cooldown
-  and one warning per distinct away event. They never block, fail, or end the interview.
-- The final report shows gaze attention percentage alongside camera engagement, plus
-  separate attention-warning and face-warning counts.
+- **Continuous 2D estimate.** Both irises (468 / 473) are measured against their eye
+  corners (33/133, 362/263) and eyelids (159/145, 386/374) and combined into normalized
+  `gazeX` / `gazeY` values in the range -1..1, plus head yaw / pitch / roll from the nose,
+  eye and chin landmarks. Detection runs every 100 ms.
+- **Calibration.** The first ~4 seconds of usable frames form a temporary in-memory
+  baseline of the candidate's neutral gaze and head pose; all later measurements are
+  offsets from that baseline. If calibration is unreliable, monitoring falls back to
+  default thresholds and says so.
+- **Smoothing and reliability.** Values are exponentially smoothed (alpha 0.35). Frames
+  are down-weighted when the two eyes disagree, the face is small or partly out of frame,
+  the eyes are squinting, or the head is strongly turned. Below the reliability threshold
+  the state becomes "Tracking uncertain" and **never** produces a warning.
+- **Blinks and closures.** Eye-aspect ratio filters blinks out of the classification;
+  blink counts and closures longer than 1.5 s are recorded as metrics only.
+- **Warning levels.** Attention must be away for a continuous 3 seconds before it becomes
+  a distinct attention-away event. Warnings use the standard 8-second cooldown, stop at
+  level 2, and step back down after sustained attention. They never block, fail, penalise,
+  or end the interview.
+- **Camera highlight.** The live preview border is driven by the warning level only:
+  level 0 neutral, level 1 soft amber glow, level 2 soft red glow.
+- **Report metrics.** Camera engagement, gaze attention percentage (time-based),
+  attention-away events, total and longest away time, level 1 / level 2 warning counts,
+  rapid gaze shifts, extended eye closures, no-face / multiple-face events and tracking
+  quality — descriptive only, never part of the score.
 
 No video frames, eye images, or camera data ever leave the browser — only text
 transcripts are sent for AI evaluation.
@@ -115,8 +127,9 @@ over HTTPS or localhost for those APIs to work.
 
 - Camera engagement is an approximation from face landmark geometry, not eye tracking.
   Glasses, lighting, and off-centre camera placement affect it.
-- Gaze attention is an approximation from iris/eyelid landmark ratios. It is not
-  calibrated per user and is not a proctoring or cheating-detection signal.
+- Gaze attention is an approximation from iris/eyelid landmark ratios with a short
+  per-session calibration. It is not exact eye tracking and is not a proctoring,
+  cheating, honesty, emotion or personality signal.
 
 - Face detection needs to download the MediaPipe model from a CDN on first use; if it
   fails, the app shows "Face detection unavailable" and the interview continues.

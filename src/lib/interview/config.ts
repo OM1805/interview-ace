@@ -29,31 +29,64 @@ export const NO_FACE_GRACE_MS = 3000;
 export const WARNING_COOLDOWN_MS = 8000;
 
 /**
- * Gaze / attention monitoring configuration.
- * Approximate, landmark-based attention estimation — never eye tracking,
- * never cheating detection.
+ * Approximate gaze / attention monitoring configuration.
+ * Coarse, landmark-based attention estimation — never exact eye tracking,
+ * never cheating, honesty, emotion or personality inference.
+ * Every value below is local-only and configurable in one place.
  */
-/** Sustained attention-away time before an attention warning is raised. */
-export const GAZE_GRACE_MS = 3000;
-/** Sustained acceptable attention before an attention-away event is considered over. */
-export const GAZE_RECOVERY_MS = 1000;
-/** How many recent samples are smoothed into one stable gaze state. */
-export const GAZE_SMOOTHING_SAMPLES = 5;
-/** How many of those samples must agree before the state changes. */
-export const GAZE_SMOOTHING_MAJORITY = 3;
-/** Normalised iris offset thresholds inside the eye opening (0 = inner edge, 1 = outer edge). */
-export const GAZE_HORIZONTAL_LEFT = 0.34;
-export const GAZE_HORIZONTAL_RIGHT = 0.66;
-/** Normalised iris position between the eyelids (0 = upper lid, 1 = lower lid). */
-export const GAZE_VERTICAL_DOWN = 0.68;
-export const GAZE_VERTICAL_UP = 0.22;
-/** Eye-aspect ratio below which the eye is treated as closed (blink) and the sample is skipped. */
-export const BLINK_EAR_THRESHOLD = 0.15;
 
-/** The two informational attention warning levels. */
+/** Detection tick period. One MediaPipe inference per tick. */
+export const MONITOR_INTERVAL_MS = 100;
+
+/** Local, temporary calibration of the candidate's neutral pose. */
+export const CALIBRATION_DURATION_MS = 4000;
+/** Minimum usable samples before a calibration baseline is accepted. */
+export const CALIBRATION_MIN_SAMPLES = 12;
+
+/** Sustained attention-away time before an attention warning is raised. */
+export const AWAY_GRACE_MS = 3000;
+/** Sustained acceptable attention before an attention-away event is considered over. */
+export const RECOVERY_MS = 1200;
+
+/** Acceptable attention region around the calibrated neutral point (normalised -1..1). */
+export const GAZE_TOLERANCE_X = 0.34;
+export const GAZE_TOLERANCE_Y = 0.36;
+/** Head-pose tolerance around the calibrated neutral pose (normalised units). */
+export const HEAD_YAW_TOLERANCE = 0.42;
+export const HEAD_PITCH_TOLERANCE = 0.4;
+
+/** Boundary between "slight" and "strong" descriptive gaze labels. */
+export const GAZE_STRONG_X = 0.6;
+export const GAZE_STRONG_Y = 0.6;
+
+/** Exponential-moving-average factor for gaze/head smoothing (0..1, higher = faster). */
+export const SMOOTHING_ALPHA = 0.35;
+
+/** Below this reliability the state is reported as uncertain and never warned on. */
+export const RELIABILITY_THRESHOLD = 0.45;
+/** Normalised inter-eye distance below which the face is considered too small/far. */
+export const MIN_FACE_WIDTH = 0.055;
+/** Disagreement between both eyes above which reliability is reduced. */
+export const EYE_DISAGREEMENT_LIMIT = 0.9;
+
+/** Gaze speed (normalised units per second) treated as a rapid gaze shift. */
+export const RAPID_GAZE_THRESHOLD = 3.5;
+/** Window and count used to record a "repeated rapid shifts" behaviour. */
+export const RAPID_SHIFT_WINDOW_MS = 4000;
+export const RAPID_SHIFT_REPEAT_COUNT = 4;
+
+/** Eye-aspect ratio below which the eye is treated as closed (blink). */
+export const BLINK_EAR_THRESHOLD = 0.15;
+/** Continuous closure longer than this is recorded as an extended eye closure. */
+export const EXTENDED_CLOSURE_THRESHOLD_MS = 1500;
+
+/** Sustained attention required before the warning highlight steps back down one level. */
+export const WARNING_DECAY_MS = 6000;
+
+/** The two informational attention warning levels (never blocking, never failing). */
 export const ATTENTION_WARNINGS = [
-  "Please maintain your attention toward the camera.",
-  "Repeated attention-away detected. Please maintain your attention toward the camera.",
+  "Please keep your attention toward the camera.",
+  "Please return your attention toward the camera.",
 ] as const;
 
 /** Max upload size for a temporary audio clip (bytes). */

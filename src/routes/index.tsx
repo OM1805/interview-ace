@@ -73,11 +73,8 @@ function InterviewApp() {
   }, []);
 
   const monitorActive = phase === "interview" || phase === "analysis";
-  const { faceStatus, engagement, gaze, stats } = useFaceMonitor(
-    camera.videoRef,
-    monitorActive && camera.status === "active",
-    pushWarning,
-  );
+  const { faceStatus, engagement, attentionState, gazeDirection, warningLevel, calibrated, stats } =
+    useFaceMonitor(camera.videoRef, monitorActive && camera.status === "active", pushWarning);
 
   /** Setup → questions. */
   const handleStart = useCallback(async () => {
@@ -311,7 +308,10 @@ function InterviewApp() {
           cameraError={camera.error}
           faceStatus={faceStatus}
           engagement={engagement}
-          gaze={gaze}
+          attentionState={attentionState}
+          gazeDirection={gazeDirection}
+          warningLevel={warningLevel}
+          calibrated={calibrated}
         />
       </div>
     </main>

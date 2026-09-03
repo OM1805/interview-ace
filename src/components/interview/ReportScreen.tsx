@@ -17,9 +17,15 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
     cameraStats.samples > 0
       ? `${Math.round((cameraStats.facingSamples / cameraStats.samples) * 100)}%`
       : "Not measured";
+  const classified = cameraStats.attentionMs + cameraStats.awayMs;
   const gazeAttention =
-    cameraStats.gazeSamples > 0
-      ? `${Math.round((cameraStats.attentiveSamples / cameraStats.gazeSamples) * 100)}%`
+    classified > 0
+      ? `${Math.round((cameraStats.attentionMs / classified) * 100)}%`
+      : "Not measured";
+  const seconds = (ms: number) => `${Math.round(ms / 1000)}s`;
+  const trackingQuality =
+    cameraStats.monitoredMs > 0
+      ? `${Math.round((cameraStats.uncertainMs / cameraStats.monitoredMs) * 100)}% uncertain`
       : "Not measured";
 
   return (
@@ -99,11 +105,65 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
           </div>
           <div>
             <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Attention-away events
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.attentionAwayEvents}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Total time away
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {seconds(cameraStats.awayMs)}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Longest away period
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {seconds(cameraStats.longestAwayMs)}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
               Attention warnings
             </dt>
             <dd className="mt-1 text-lg font-semibold text-foreground">
-              {cameraStats.attentionWarnings}
+              {cameraStats.warning1Count} level 1 · {cameraStats.warning2Count} level 2
             </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Rapid gaze shifts
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.rapidShiftCount} ({cameraStats.repeatedShiftEvents} repeated)
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Extended eye closures
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.extendedClosureEvents}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              No-face / multiple-face events
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">
+              {cameraStats.noFaceEvents} / {cameraStats.multipleFaceEvents}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+              Tracking quality
+            </dt>
+            <dd className="mt-1 text-lg font-semibold text-foreground">{trackingQuality}</dd>
           </div>
           <div>
             <dt className="text-xs uppercase tracking-wide text-muted-foreground">Face warnings</dt>
