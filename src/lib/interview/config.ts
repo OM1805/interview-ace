@@ -80,6 +80,9 @@ export const BLINK_EAR_THRESHOLD = 0.15;
 /** Continuous closure longer than this is recorded as an extended eye closure. */
 export const EXTENDED_CLOSURE_THRESHOLD_MS = 1500;
 
+/** Sustained attention required before the warning highlight steps back down one level. */
+export const WARNING_DECAY_MS = 6000;
+
 /** The two informational attention warning levels (never blocking, never failing). */
 export const ATTENTION_WARNINGS = [
   "Please keep your attention toward the camera.",
