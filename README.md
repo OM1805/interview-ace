@@ -55,6 +55,29 @@ multiple faces, and approximate head orientation ("Camera Engagement"). Warnings
 after a 3-second grace period with an 8-second cooldown and are purely informational —
 they never fail, stop, or auto-submit anything.
 
+### Gaze attention monitoring
+
+Gaze attention is estimated entirely in the browser from the MediaPipe face landmarks
+already used for face detection (`src/lib/media/gaze.ts`):
+
+- Iris landmarks (468 / 473) are compared to the eye corners (33/133, 362/263) to get a
+  normalized horizontal iris position, and to the eyelids (159/145, 386/374) for a
+  normalized vertical position.
+- Eye aspect ratio filters out blinks; blink frames are skipped instead of counted as
+  looking away. Head orientation gates reliability: a strongly turned head reports "away".
+- Five consecutive samples are smoothed with a 3-of-5 majority vote before any status
+  change, so brief glances do not trigger warnings.
+- A continuous off-camera gaze must persist for 3 seconds before it counts as an
+  attention-away event; 1 second of good gaze recovers the state.
+- Exactly two informational attention warnings exist, with the standard 8-second cooldown
+  and one warning per distinct away event. They never block, fail, or end the interview.
+- The final report shows gaze attention percentage alongside camera engagement, plus
+  separate attention-warning and face-warning counts.
+
+No video frames, eye images, or camera data ever leave the browser — only text
+transcripts are sent for AI evaluation.
+
+
 ## Scoring
 
 - **Answer score** = average of the six category scores.
