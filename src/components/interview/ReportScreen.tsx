@@ -17,9 +17,15 @@ export function ReportScreen({ report, answers, cameraStats, onRestart }: Props)
     cameraStats.samples > 0
       ? `${Math.round((cameraStats.facingSamples / cameraStats.samples) * 100)}%`
       : "Not measured";
+  const classified = cameraStats.attentionMs + cameraStats.awayMs;
   const gazeAttention =
-    cameraStats.gazeSamples > 0
-      ? `${Math.round((cameraStats.attentiveSamples / cameraStats.gazeSamples) * 100)}%`
+    classified > 0
+      ? `${Math.round((cameraStats.attentionMs / classified) * 100)}%`
+      : "Not measured";
+  const seconds = (ms: number) => `${Math.round(ms / 1000)}s`;
+  const trackingQuality =
+    cameraStats.monitoredMs > 0
+      ? `${Math.round((cameraStats.uncertainMs / cameraStats.monitoredMs) * 100)}% uncertain`
       : "Not measured";
 
   return (
