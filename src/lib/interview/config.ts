@@ -28,6 +28,35 @@ export const LOOK_AWAY_GRACE_MS = 3000;
 export const NO_FACE_GRACE_MS = 3000;
 export const WARNING_COOLDOWN_MS = 8000;
 
+/**
+ * Gaze / attention monitoring configuration.
+ * Approximate, landmark-based attention estimation — never eye tracking,
+ * never cheating detection.
+ */
+/** Sustained attention-away time before an attention warning is raised. */
+export const GAZE_GRACE_MS = 3000;
+/** Sustained acceptable attention before an attention-away event is considered over. */
+export const GAZE_RECOVERY_MS = 1000;
+/** How many recent samples are smoothed into one stable gaze state. */
+export const GAZE_SMOOTHING_SAMPLES = 5;
+/** How many of those samples must agree before the state changes. */
+export const GAZE_SMOOTHING_MAJORITY = 3;
+/** Normalised iris offset thresholds inside the eye opening (0 = inner edge, 1 = outer edge). */
+export const GAZE_HORIZONTAL_LEFT = 0.34;
+export const GAZE_HORIZONTAL_RIGHT = 0.66;
+/** Normalised iris position between the eyelids (0 = upper lid, 1 = lower lid). */
+export const GAZE_VERTICAL_DOWN = 0.68;
+export const GAZE_VERTICAL_UP = 0.22;
+/** Eye-aspect ratio below which the eye is treated as closed (blink) and the sample is skipped. */
+export const BLINK_EAR_THRESHOLD = 0.15;
+
+/** The two informational attention warning levels. */
+export const ATTENTION_WARNINGS = [
+  "Please maintain your attention toward the camera.",
+  "Repeated attention-away detected. Please maintain your attention toward the camera.",
+] as const;
+
+
 /** Max upload size for a temporary audio clip (bytes). */
 export const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
 
