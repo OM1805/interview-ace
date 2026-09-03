@@ -73,7 +73,15 @@ function InterviewApp() {
   }, []);
 
   const monitorActive = phase === "interview" || phase === "analysis";
-  const { faceStatus, engagement, gaze, stats } = useFaceMonitor(
+  const {
+    faceStatus,
+    engagement,
+    attentionState,
+    gazeDirection,
+    warningLevel,
+    calibrated,
+    stats,
+  } = useFaceMonitor(
     camera.videoRef,
     monitorActive && camera.status === "active",
     pushWarning,
